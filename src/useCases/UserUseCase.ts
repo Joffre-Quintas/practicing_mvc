@@ -4,7 +4,12 @@ import { IUser } from "../domain/interfaces/IUser";
 import { UserRepository } from "../repositories/UserRepository";
 
 export class UserUseCase {
-  constructor(private userRepository: UserRepository) {}
+  userRepository: UserRepository
+  constructor(userRepository: UserRepository) {
+    console.log('criando user use case')
+    console.log(userRepository)
+    this.userRepository = userRepository
+  }
 
   async createUser(data: UserDTO){
     const isExist = await this.userRepository.findUserByEmail(data.email)
@@ -17,7 +22,7 @@ export class UserUseCase {
   }
 
   async listAllUsers(): Promise<IUser[]> {
-    const allUsers = this.userRepository.listAllUsers()
+    const allUsers = await this.userRepository.listAllUsers()
     return allUsers
   }
 }

@@ -1,11 +1,20 @@
 import { Router } from "express";
-import { UserController } from "../controller/UserController";
-import { UserUseCase } from "../useCases/UserUseCase";
-import { UserRepository } from "../repositories/UserRepository";
-import { db } from "..";
+import {randomUUID} from "crypto";
+import {InstanceFactory} from "../controller/factory/userControllerFactory";
+
 
 const route = Router()
-const userController = new UserController(new UserUseCase(new UserRepository(db)))
 
-route.get('/user', userController.showAllUsers)
+const userRepository = InstanceFactory.getRepositoryInstance()
+const userController = InstanceFactory.getControllerInstance()
+
+async function initTeste() {
+    console.log("iniciando teste")
+    console.log(await userRepository.createUser({id: randomUUID(), name: "teste", email: "teste", password:"teste"}))
+    console.log(await userRepository.findUserByEmail("teste"))
+}
+
+initTeste()
+
+route.get('/user', userController.showAllUsers.bind(userController))
 export { route }
